@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import {
   Button,
   FormControl,
@@ -15,6 +16,8 @@ import {
 import Send from '@material-ui/icons/Send'
 import { makeStyles } from '@material-ui/core/styles'
 
+import { createMessage } from '../../store/actions/messageActions'
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,10 +32,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function CreateMessage() {
+function CreateMessage(props) {
   const [recipient, setRecipient] = React.useState('')
-  const [text, setText] = React.useState('')
-  const [publicPost, setPublic] = React.useState(true)
+  const [content, setContent] = React.useState('')
+  const [isPublic, setPublic] = React.useState(true)
 
   const classes = useStyles()
 
@@ -40,21 +43,44 @@ function CreateMessage() {
     setRecipient(event.target.value)
   }
 
-  function handleText(event) {
-    setText(event.target.value)
+  function handleContent(event) {
+    setContent(event.target.value)
   }
 
   function handleSwitch() {
-    setPublic(!publicPost)
+    setPublic(!isPublic)
   }
 
-  const switchLabel = publicPost ? 'Public post' : 'Private message'
-  const buttonLabel = publicPost ? 'Publish' : 'Send'
+  function handleSubmit(event) {
+    event.preventDefault()
+
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric', 
+      hour: 'numeric', 
+      minute: 'numeric' 
+    }
+    const now  = new Date()
+    const date = now.toLocaleDateString("en-US", options) 
+
+    props.createMessage({
+      //  author,
+      content,
+      recipient,
+      isPublic,
+      date
+    })
+  }
+
+  const switchLabel = isPublic ? 'Public post' : 'Private message'
+  const buttonLabel = isPublic ? 'Publish' : 'Send'
 
 	return (
 		<Paper className={ classes.root }>
       <Typography variant="h4"> New message </Typography>  
-			<form className={ classes.container } noValidate autoComplete="off">
+			<form onSubmit={ handleSubmit } className={ classes.container } noValidate autoComplete="off">
         <Grid
             container
             direction="row"
@@ -63,13 +89,13 @@ function CreateMessage() {
           >
           <FormControlLabel
             control={
-              <Switch checked={ publicPost } onChange={ handleSwitch } value="publicPost" />
+              <Switch checked={ isPublic } onChange={ handleSwitch } value="publicPost" />
             }
             label={ switchLabel }
           />
         </Grid>
 
-        { !publicPost &&
+        { !isPublic &&
           <FormControl>
             <InputLabel htmlFor="user-target">To</InputLabel>
             <Select
@@ -91,11 +117,11 @@ function CreateMessage() {
         <TextField
           label="Message"
           placeholder="Type your message"
-          value={ text }
+          value={ content }
           multiline
           fullWidth
           rowsMax="6"
-          onChange={ handleText }
+          onChange={ handleContent }
           className={ classes.textField }
           margin="normal"
         />
@@ -106,7 +132,7 @@ function CreateMessage() {
           justify="flex-end"
           alignItems="center"
         >
-          <Button variant="contained" color="primary" className={ classes.button }>
+          <Button onClick={ handleSubmit } variant="contained" color="primary" className={ classes.button }>
             { buttonLabel }
             <Send className={ classes.icon } />
           </Button>
@@ -116,4 +142,8 @@ function CreateMessage() {
 	)
 }
 
-export default CreateMessage
+const mapDispatchToProps = (dispatch) => ({
+  createMessage: (message) => dispatch(createMessage(message))
+})
+
+export default connect(null, mapDispatchToProps)(CreateMessage)

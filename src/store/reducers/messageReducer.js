@@ -7,7 +7,14 @@ const initState = {
 }
 
 const messageReducer = (state = initState, action) => {
-  return state
+  switch (action.type) {
+    case 'CREATE_MESSAGE':
+      console.log('created', action.message)
+      return state
+
+    default:
+      return state
+  }
 }
 
 export default messageReducer
