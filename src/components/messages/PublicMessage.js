@@ -9,22 +9,27 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-
-function PublicMessage() {
+function PublicMessage(props) {
 	const classes = useStyles()
+
+	const {
+		author,
+		content,
+		date
+	} = props.message
 
 	return (
 		<Paper className={ classes.root }>
-			<Typography variant="h4">
-				Romain Ville published
+			<Typography variant="h6">
+				{ author } posted:
 			</Typography>
 
 			<Typography variant="body1">
-				OMG! cool stuff here
+				{ content }
 			</Typography>
 
 			<Typography variant="caption">
-				July 20, 14:05
+				{ date }
 			</Typography>
 		</Paper>
 	)

@@ -11,21 +11,27 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function PrivateMessage() {
+function PrivateMessage(props) {
 	const classes = useStyles()
+
+	const {
+		author,
+		content,
+		date
+	} = props.message
 
 	return (
 		<Paper className={ classes.root }>
-			<Typography variant="h5">
-				Romain Ville whispered to you
+			<Typography variant="h6">
+				{ author } whispered to you:
 			</Typography>
 
 			<Typography variant="body1">
-				Hey Cesar, yo thurr?
+				{ content }
 			</Typography>
 
 			<Typography variant="caption">
-				July 20, 14:05
+				{ date }
 			</Typography>
 		</Paper>
 	)

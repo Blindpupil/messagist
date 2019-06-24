@@ -1,16 +1,22 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Container } from '@material-ui/core'
 
 import MessageList from '../messages/MessageList'
 
 
-function Dashboard() {
+function Dashboard(props) {
+	const { messages } = props
 
 	return (
 		<Container>
-			<MessageList />
+			<MessageList messages={ messages } />
 		</Container>
 	)
 }
 
-export default Dashboard
+const mapStateToProps = state => ({
+	messages: state.message.messages
+})
+
+export default connect(mapStateToProps)(Dashboard)

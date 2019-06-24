@@ -9,7 +9,8 @@ import {
   Paper,
   Select,
   Switch,
-  TextField
+  TextField,
+  Typography
 } from '@material-ui/core'
 import Send from '@material-ui/icons/Send'
 import { makeStyles } from '@material-ui/core/styles'
@@ -47,10 +48,12 @@ function CreateMessage() {
     setPublic(!publicPost)
   }
 
-  let switchLabel = publicPost ? 'Public post' : 'Private message'
+  const switchLabel = publicPost ? 'Public post' : 'Private message'
+  const buttonLabel = publicPost ? 'Publish' : 'Send'
 
 	return (
 		<Paper className={ classes.root }>
+      <Typography variant="h4"> New message </Typography>  
 			<form className={ classes.container } noValidate autoComplete="off">
         <Grid
             container
@@ -103,8 +106,8 @@ function CreateMessage() {
           justify="flex-end"
           alignItems="center"
         >
-          <Button variant="contained" color="primary" className={classes.button}>
-            Send
+          <Button variant="contained" color="primary" className={ classes.button }>
+            { buttonLabel }
             <Send className={ classes.icon } />
           </Button>
         </Grid>
