@@ -54,23 +54,11 @@ function CreateMessage(props) {
   function handleSubmit(event) {
     event.preventDefault()
 
-    const options = { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric', 
-      hour: 'numeric', 
-      minute: 'numeric' 
-    }
-    const now  = new Date()
-    const date = now.toLocaleDateString("en-US", options) 
-
     props.createMessage({
       //  author,
       content,
       recipient,
-      isPublic,
-      date
+      isPublic
     })
   }
 

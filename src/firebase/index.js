@@ -8,8 +8,4 @@ import firebaseConfig from './config'
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
 
-firebase.firestore().settings({
-  timestampsInSnapshots: true
-})
-
 export default firebase
