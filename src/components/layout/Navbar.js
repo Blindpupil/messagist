@@ -49,12 +49,10 @@ export default function Navbar() {
 
           <div className={ classes.grow } />
           
-					{ 
-						loggedIn 
-						? 
-						<SignedInLinks />
-						:
-						<SignedOutLinks />
+					{
+						loggedIn
+						? <SignedInLinks />
+						: <SignedOutLinks />
 					}
         </Toolbar>
       </AppBar>

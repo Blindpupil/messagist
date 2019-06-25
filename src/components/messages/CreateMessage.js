@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import {
   Button,
   FormControl,
@@ -9,10 +10,13 @@ import {
   Paper,
   Select,
   Switch,
-  TextField
+  TextField,
+  Typography
 } from '@material-ui/core'
 import Send from '@material-ui/icons/Send'
 import { makeStyles } from '@material-ui/core/styles'
+
+import { createMessage } from '../../store/actions/messageActions'
 
 
 const useStyles = makeStyles(theme => ({
@@ -28,10 +32,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function CreateMessage() {
+function CreateMessage(props) {
   const [recipient, setRecipient] = React.useState('')
-  const [text, setText] = React.useState('')
-  const [publicPost, setPublic] = React.useState(true)
+  const [content, setContent] = React.useState('')
+  const [isPublic, setPublic] = React.useState(true)
 
   const classes = useStyles()
 
@@ -39,19 +43,32 @@ function CreateMessage() {
     setRecipient(event.target.value)
   }
 
-  function handleText(event) {
-    setText(event.target.value)
+  function handleContent(event) {
+    setContent(event.target.value)
   }
 
   function handleSwitch() {
-    setPublic(!publicPost)
+    setPublic(!isPublic)
   }
 
-  let switchLabel = publicPost ? 'Public post' : 'Private message'
+  function handleSubmit(event) {
+    event.preventDefault()
+
+    props.createMessage({
+      //  author,
+      content,
+      recipient,
+      isPublic
+    })
+  }
+
+  const switchLabel = isPublic ? 'Public post' : 'Private message'
+  const buttonLabel = isPublic ? 'Publish' : 'Send'
 
 	return (
 		<Paper className={ classes.root }>
-			<form className={ classes.container } noValidate autoComplete="off">
+      <Typography variant="h4"> New message </Typography>  
+			<form onSubmit={ handleSubmit } className={ classes.container } noValidate autoComplete="off">
         <Grid
             container
             direction="row"
@@ -60,13 +77,13 @@ function CreateMessage() {
           >
           <FormControlLabel
             control={
-              <Switch checked={ publicPost } onChange={ handleSwitch } value="publicPost" />
+              <Switch checked={ isPublic } onChange={ handleSwitch } value="publicPost" />
             }
             label={ switchLabel }
           />
         </Grid>
 
-        { !publicPost &&
+        { !isPublic &&
           <FormControl>
             <InputLabel htmlFor="user-target">To</InputLabel>
             <Select
@@ -88,11 +105,11 @@ function CreateMessage() {
         <TextField
           label="Message"
           placeholder="Type your message"
-          value={ text }
+          value={ content }
           multiline
           fullWidth
           rowsMax="6"
-          onChange={ handleText }
+          onChange={ handleContent }
           className={ classes.textField }
           margin="normal"
         />
@@ -103,8 +120,8 @@ function CreateMessage() {
           justify="flex-end"
           alignItems="center"
         >
-          <Button variant="contained" color="primary" className={classes.button}>
-            Send
+          <Button onClick={ handleSubmit } variant="contained" color="primary" className={ classes.button }>
+            { buttonLabel }
             <Send className={ classes.icon } />
           </Button>
         </Grid>
@@ -113,4 +130,8 @@ function CreateMessage() {
 	)
 }
 
-export default CreateMessage
+const mapDispatchToProps = (dispatch) => ({
+  createMessage: (message) => dispatch(createMessage(message))
+})
+
+export default connect(null, mapDispatchToProps)(CreateMessage)

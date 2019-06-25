@@ -3,7 +3,8 @@ import {
   Button,
   Grid,
   Paper,
-  TextField
+  TextField,
+  Typography
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -41,6 +42,7 @@ function SignIn() {
 
 	return (
 		<Paper className={ classes.root }>
+      <Typography variant="h4"> Login </Typography>  
 			<form onSubmit={ handleSubmit } className={ classes.container }>
         <TextField
           label="Email"
