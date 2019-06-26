@@ -22,23 +22,46 @@ const useStyles = makeStyles(theme => ({
 		textAlign: 'center',
 		margin: theme.spacing(2)
 	},
+	welcomeMessage: {
+		padding: theme.spacing(1)
+	},
 	loader: {
 		marginTop: '40%'
 	}
 }))
 
 /**
- * Dashboard component. Currently only holding the list of messages
+ * Dashboard component. Currently holds only the list of messages
  * @param {*} props 
  */
 function Dashboard(props) {
-	const { messages } = props
-	const classes = useStyles()
+	const {
+		auth, 
+		messages,
+		users
+ } = props
 
+	const classes = useStyles()
+	
 	const showMessages = () => {
+		const user = users && props.users.find(o => o.id === auth.uid)
+		const username = user ? user.username : ''
+
 		return isEmpty(messages)
 			? <Typography className={ classes.messageEmpty } variant="h4"> There are no messages yet! </Typography>
-			: <MessageList messages={ messages } />
+			: (
+				<React.Fragment>
+					<Typography className={ classes.welcomeMessage } variant="body1"> 
+						{
+							!isEmpty(users)
+							? 'Welcome! Login or Sign up to post messages!'
+							: `Welcome ${ username }, here are your messages:`
+						}
+					</Typography>
+
+					<MessageList auth={ auth } messages={ messages } />
+				</React.Fragment>
+			)
 	}
 
 	const loader = () => (
@@ -49,23 +72,25 @@ function Dashboard(props) {
 
 	return (
 		<Container>
-			{
-				isLoaded(messages)
-					? showMessages()
-					: loader()
+			{ 
+				isLoaded(props.users) && isLoaded(props.auth) && isLoaded(messages)
+				? showMessages()
+				: loader()
 			}
 		</Container>
 	)
 }
 
 const mapStateToProps = (state) => ({
-	messages: state.firestore.ordered.messages
+	auth: state.firebase.auth,
+	messages: state.firestore.ordered.messages,
+	users: state.firestore.ordered.users
 })	
 
 /**
  * Sync the messages collection in firestore to the Dashboard component
  */
 export default compose(
-	firestoreConnect([ 'messages' ]),
+	firestoreConnect([ 'messages', 'users' ]),
 	connect(mapStateToProps)
 )(Dashboard)

@@ -3,17 +3,11 @@ import PublicMessage from './PublicMessage'
 import PrivateMessage from './PrivateMessage'
 
 function MessageList(props) {
-	const { messages } = props
+	const { messages, auth } = props
+	const currentUser = auth.uid
 
-	const publicMessages = []
-	const privateMessages = []
-
-	if (messages) {
-		messages.forEach(message => message.isPublic 
-			? publicMessages.push(message)
-			: privateMessages.push(message)
-		)
-	}
+	const publicMessages = messages.filter(message => message.isPublic)
+	const privateMessages = messages.filter(message => message.recipient === currentUser)
 
 	const publicMessageList = publicMessages.map(publicMessage => 
 		publicMessage &&

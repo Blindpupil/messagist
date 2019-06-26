@@ -1,19 +1,17 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-
 import { withFirebase } from 'react-redux-firebase'
 
 import { makeStyles } from '@material-ui/core/styles'
 import {
+  Badge,
 	IconButton,
-	Badge,
 	MenuItem,
-	Menu
+  Menu,
+  Typography
 } from '@material-ui/core'
-
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import MailIcon from '@material-ui/icons/Mail'
-import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 
 import MenuItemButton from './MenuItemButton'
@@ -40,10 +38,12 @@ const useStyles = makeStyles(theme => ({
 function SignedInLinks(props) {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [notificationsAnchorEl, setNotificationsAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
 
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
+  const isNotificationsMenuOpen = Boolean(notificationsAnchorEl)
 
   function handleProfileMenuOpen(event) {
     setAnchorEl(event.currentTarget)
@@ -52,9 +52,14 @@ function SignedInLinks(props) {
   function handleMobileMenuClose() {
     setMobileMoreAnchorEl(null)
   }
+  
+  function handleNotificationsMenuOpen(event) {
+    setNotificationsAnchorEl(event.currentTarget)
+  }
 
   function handleMenuClose() {
     setAnchorEl(null)
+    setNotificationsAnchorEl(null)
     handleMobileMenuClose()
   }
 
@@ -69,7 +74,7 @@ function SignedInLinks(props) {
   }
 
   const menuId = 'primary-search-account-menu'
-  const renderMenu = (
+  const renderProfileMenu = (
     <Menu
       anchorEl={ anchorEl }
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -82,12 +87,55 @@ function SignedInLinks(props) {
       <MenuItem onClick={ handleMenuClose }>Profile</MenuItem>
 
       <MenuItem onClick={ handleLogout }>
-				<NavLink className={ classes.menuItemLink } to="#!">
+				<NavLink className={ classes.menuItemLink } to="/">
 					Logout
 				</NavLink>
 			</MenuItem>
     </Menu>
   )
+
+  const currentUser = props.auth.uid
+  const privateMessages = props.messages.filter(message => message.recipient === currentUser)
+  const privateMessageAmount = privateMessages.length
+
+  const notificationsId = 'notifications-account-menu'
+  const renderNotificationsMenu = (
+    <Menu
+      anchorEl={ notificationsAnchorEl }
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={ notificationsId }
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }} 
+      open={ isNotificationsMenuOpen }
+      onClose={ handleMenuClose }
+    >
+      { privateMessages.map(message => (
+        <MenuItem key={ message.id }>
+          <NavLink className={ classes.menuItemLink } to="/">
+            <Typography variant="caption"> { message.author } whispered you </Typography>
+            <Typography variant="body2"> { message.content } </Typography>
+          </NavLink>
+        </MenuItem>
+        ))
+      }
+    </Menu>
+  )
+
+  const renderNotifications = () => {
+    return (
+      <IconButton 
+        aria-label={ `Show ${ privateMessages } new mails` }
+        color="inherit"
+        aria-controls={ menuId }
+        aria-haspopup={ Boolean(privateMessageAmount) } // false for 0, true for any other number
+        onClick={ handleNotificationsMenuOpen }
+      >
+        <Badge badgeContent={ privateMessageAmount } color="secondary">
+          <MailIcon />
+        </Badge>
+      </IconButton>
+    )
+  }
 
   const mobileMenuId = 'primary-search-account-menu-mobile'
   const renderMobileMenu = (
@@ -100,22 +148,9 @@ function SignedInLinks(props) {
       open={ isMobileMenuOpen }
       onClose={ handleMobileMenuClose }
     >
-      <MenuItem>
-        <IconButton aria-label="Show 4 new mails" color="inherit">
-          <Badge badgeContent={ 4 } color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
+      <MenuItem onClick={ handleNotificationsMenuOpen }>
+        { renderNotifications() }
         <p>Messages</p>
-      </MenuItem>
-      
-      <MenuItem>
-        <IconButton aria-label="Show 11 new notifications" color="inherit">
-          <Badge badgeContent={ 11 } color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
       </MenuItem>
 
       <MenuItem onClick={ handleProfileMenuOpen }>
@@ -137,17 +172,7 @@ function SignedInLinks(props) {
       <MenuItemButton to="/create"> New Message </MenuItemButton>
 
 			<div className={ classes.sectionDesktop }>
-				<IconButton aria-label="Show 4 new mails" color="inherit">
-					<Badge badgeContent={ 4 } color="secondary">
-						<MailIcon />
-					</Badge>
-				</IconButton>
-
-				<IconButton aria-label="Show 17 new notifications" color="inherit">
-					<Badge badgeContent={ 17 } color="secondary">
-						<NotificationsIcon />
-					</Badge>
-				</IconButton>
+        { renderNotifications() }
 
 				<IconButton
 					edge="end"
@@ -174,10 +199,10 @@ function SignedInLinks(props) {
 			</div>
 
       { renderMobileMenu }
-      { renderMenu }
+      { renderProfileMenu }
+      { renderNotificationsMenu }
     </React.Fragment>
   )
 }
 
 export default withFirebase(SignedInLinks)
-

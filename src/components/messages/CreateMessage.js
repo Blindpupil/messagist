@@ -1,9 +1,10 @@
 import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firestoreConnect } from 'react-redux-firebase'
+import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import {
   Button,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   Grid,
@@ -31,7 +32,10 @@ const useStyles = makeStyles(theme => ({
   },
   icon: {
     paddingLeft: theme.spacing(1)
-  }
+  },
+  loader: {
+		margin: theme.spacing(4)
+	}
 }))
 
 function CreateMessage(props) {
@@ -40,6 +44,21 @@ function CreateMessage(props) {
   const [isPublic, setPublic] = React.useState(true)
 
   const classes = useStyles()
+
+  const usersLoaded = isLoaded(props.users)
+  const isOnlyUser = usersLoaded && props.users.length === 1
+
+  const loader = () => (
+		<Grid className={ classes.loader } container direction="row" alignItems="center" justify="center">
+			<CircularProgress color="secondary" />
+		</Grid>
+  )
+  
+  const usersMenuItems = () => {
+    return props.users.map(user => (
+      <MenuItem key={ user.id } value={ user.id }>{ user.username }</MenuItem>
+    ))
+  }
 
   function handleRecipient(event) {
     setRecipient(event.target.value)
@@ -53,13 +72,15 @@ function CreateMessage(props) {
     setPublic(!isPublic)
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
 
     const { uid } = props.auth
     const { username } = props.users.find(o => o.id === uid)
+    
 
-    props.createMessage({
+    // TODO: error handling
+    await props.createMessage({
       author: username,
       authorId: uid,
       content,
@@ -75,65 +96,60 @@ function CreateMessage(props) {
 
 	return (
 		<Paper className={ classes.root }>
-      <Typography variant="h4"> New message </Typography>  
-			<form onSubmit={ handleSubmit } className={ classes.container } noValidate autoComplete="off">
-        <Grid
-            container
-            direction="row"
-            justify="flex-end"
-            alignItems="center"
-          >
-          <FormControlLabel
-            control={
-              <Switch checked={ isPublic } onChange={ handleSwitch } value="publicPost" />
-            }
-            label={ switchLabel }
+      <Typography variant="h4"> New message </Typography>
+      { usersLoaded ?
+        <form onSubmit={ handleSubmit } className={ classes.container } noValidate autoComplete="off">
+
+          { !isOnlyUser && // if there's only 1 user, there's no one to send the message to
+            <Grid container direction="row" justify="flex-end" alignItems="center">
+              <FormControlLabel
+                control={
+                  <Switch checked={ isPublic } onChange={ handleSwitch } value="publicPost" />
+                }
+                label={ switchLabel }
+              />
+            </Grid>
+          }
+
+          { !isPublic &&
+            <FormControl>
+              <InputLabel htmlFor="user-target">To</InputLabel>
+              <Select
+                value={ recipient }
+                onChange={ handleRecipient }
+                inputProps={{
+                  name: 'recipient',
+                  id: 'user-target',
+                }}
+                autoWidth
+              >
+                { usersMenuItems() }
+              </Select>
+            </FormControl>
+          }
+
+          <TextField
+            label="Message"
+            placeholder="Type your message"
+            value={ content }
+            multiline
+            fullWidth
+            rowsMax="6"
+            onChange={ handleContent }
+            className={ classes.textField }
+            margin="normal"
           />
-        </Grid>
 
-        { !isPublic &&
-          <FormControl>
-            <InputLabel htmlFor="user-target">To</InputLabel>
-            <Select
-              value={ recipient }
-              onChange={ handleRecipient }
-              inputProps={{
-                name: 'recipient',
-                id: 'user-target',
-              }}
-              autoWidth
-            >
-              <MenuItem value="Dude One">Dude One</MenuItem>
-              <MenuItem value="Person Two">Person Two</MenuItem>
-              <MenuItem value="Thirty Guy">Thirty Guy</MenuItem>
-            </Select>
-          </FormControl>
-        }
+          <Grid container direction="row" justify="flex-end" alignItems="center">
+            <Button onClick={ handleSubmit } variant="contained" color="primary" className={ classes.button }>
+              { buttonLabel }
+              <Send className={ classes.icon } />
+            </Button>
+          </Grid>
+        </form>
 
-        <TextField
-          label="Message"
-          placeholder="Type your message"
-          value={ content }
-          multiline
-          fullWidth
-          rowsMax="6"
-          onChange={ handleContent }
-          className={ classes.textField }
-          margin="normal"
-        />
-
-        <Grid
-          container
-          direction="row"
-          justify="flex-end"
-          alignItems="center"
-        >
-          <Button onClick={ handleSubmit } variant="contained" color="primary" className={ classes.button }>
-            { buttonLabel }
-            <Send className={ classes.icon } />
-          </Button>
-        </Grid>
-      </form>
+        : loader()
+      }
 		</Paper>
 	)
 }
