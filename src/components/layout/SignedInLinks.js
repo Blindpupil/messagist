@@ -1,5 +1,8 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+
+import { withFirebase } from 'react-redux-firebase'
+
 import { makeStyles } from '@material-ui/core/styles'
 import {
 	IconButton,
@@ -34,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-export default function SignedInLinks() {
+function SignedInLinks(props) {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
@@ -59,6 +62,12 @@ export default function SignedInLinks() {
     setMobileMoreAnchorEl(event.currentTarget)
   }
 
+  function handleLogout() {
+    props.firebase.logout()
+
+    handleMenuClose()
+  }
+
   const menuId = 'primary-search-account-menu'
   const renderMenu = (
     <Menu
@@ -72,7 +81,7 @@ export default function SignedInLinks() {
     >
       <MenuItem onClick={ handleMenuClose }>Profile</MenuItem>
 
-      <MenuItem onClick={ handleMenuClose }>
+      <MenuItem onClick={ handleLogout }>
 				<NavLink className={ classes.menuItemLink } to="#!">
 					Logout
 				</NavLink>
@@ -169,3 +178,6 @@ export default function SignedInLinks() {
     </React.Fragment>
   )
 }
+
+export default withFirebase(SignedInLinks)
+

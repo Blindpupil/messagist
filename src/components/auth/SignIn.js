@@ -1,4 +1,6 @@
 import React from 'react'
+import { withFirebase } from 'react-redux-firebase'
+
 import {
   Button,
   Grid,
@@ -6,7 +8,6 @@ import {
   TextField,
   Typography
 } from '@material-ui/core'
-
 import { makeStyles } from '@material-ui/core/styles'
 
 
@@ -20,22 +21,25 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function SignIn() {
-  const [state, setState] = React.useState({
+function SignIn(props) {
+  const [credentials, setCredentials] = React.useState({
     email: '',
     password: ''
   })
 
   function handleChange(event) {
-    setState({
-      ...state,
+    setCredentials({
+      ...credentials,
       [event.target.id]: event.target.value
     })
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    console.log(state)
+    
+    await props.firebase.login(credentials)
+    
+    props.history.push('/')
   }
 
   const classes = useStyles()
@@ -74,4 +78,4 @@ function SignIn() {
 	)
 }
 
-export default SignIn
+export default withFirebase(SignIn)
