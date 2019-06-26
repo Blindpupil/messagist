@@ -40,13 +40,13 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-function Navbar({ auth }) {
-	const authLoaded = isLoaded(auth)
+function Navbar({ auth, messages }) {
+	const allLoaded = isLoaded(auth) && isLoaded(messages)
 	const authEmpty = isEmpty(auth)
 
 	const authLinks = () => {
 		return !authEmpty
-			? <SignedInLinks />
+			? <SignedInLinks auth={ auth } messages={ messages } />
 			: <SignedOutLinks />
 	}
 	
@@ -64,7 +64,7 @@ function Navbar({ auth }) {
 
           <div className={ classes.grow } />
           
-					{ authLoaded 
+					{ allLoaded 
 						? authLinks()
 						: <CircularProgress className={ classes.loader } color="secondary" />
 					}
@@ -75,7 +75,11 @@ function Navbar({ auth }) {
   )
 }
 
-const mapStateToProps = ({ firebase: { auth } }) => ({ auth })
+const mapStateToProps = (state) => ({ 
+	auth: state.firebase.auth,
+	messages: state.firestore.ordered.messages,
+	users: state.firestore.ordered.users
+})
 
 export default compose(
 	firebaseConnect(),
