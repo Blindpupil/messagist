@@ -1,5 +1,7 @@
 import React from 'react'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { firestoreConnect } from 'react-redux-firebase'
 import {
   Button,
   FormControl,
@@ -54,12 +56,18 @@ function CreateMessage(props) {
   function handleSubmit(event) {
     event.preventDefault()
 
+    const { uid } = props.auth
+    const { username } = props.users.find(o => o.id === uid)
+
     props.createMessage({
-      //  author,
+      author: username,
+      authorId: uid,
       content,
       recipient,
       isPublic
     })
+
+    props.history.push('/')
   }
 
   const switchLabel = isPublic ? 'Public post' : 'Private message'
@@ -134,4 +142,12 @@ const mapDispatchToProps = (dispatch) => ({
   createMessage: (message) => dispatch(createMessage(message))
 })
 
-export default connect(null, mapDispatchToProps)(CreateMessage)
+const mapStateToProps = (state) => ({
+  auth: state.firebase.auth,
+  users: state.firestore.ordered.users
+})
+
+export default compose(
+  firestoreConnect([ 'users' ]),
+	connect(mapStateToProps, mapDispatchToProps)
+)(CreateMessage)

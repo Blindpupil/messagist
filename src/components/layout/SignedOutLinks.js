@@ -6,8 +6,8 @@ export default function SignedOutLinks() {
 
   return (
 		<React.Fragment>
-			<MenuItemButton to="#!"> Sign up </MenuItemButton>
-			<MenuItemButton to="#!"> Login </MenuItemButton>
+			<MenuItemButton to="/signup"> Sign up </MenuItemButton>
+			<MenuItemButton to="/login"> Login </MenuItemButton>
 		</React.Fragment>
 	)
   

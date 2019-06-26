@@ -1,4 +1,6 @@
 import React from 'react'
+import { withFirebase } from 'react-redux-firebase'
+
 import {
   Button,
   Grid,
@@ -6,7 +8,6 @@ import {
   TextField,
   Typography
 } from '@material-ui/core'
-
 import { makeStyles } from '@material-ui/core/styles'
 
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function SignUp() {
+function SignUp(props) {
   const [state, setState] = React.useState({
     email: '',
     password: '',
@@ -34,16 +35,29 @@ function SignUp() {
     })
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    console.log(state)
+    const { email, password, username } = state
+
+
+    /**
+     * Creates a user passing credentials and profile objects.
+     * http://docs.react-redux-firebase.com/history/v3.0.0/docs/auth.html
+     */
+    await props.firebase.createUser(
+      { email, password }, // credentials
+      { username, email }  // profile saved in firestore
+    )
+
+    props.history.push('/')
   }
 
   const classes = useStyles()
 
 	return (
 		<Paper className={ classes.root }>
-      <Typography variant="h4"> Sign up </Typography>  
+      <Typography variant="h4"> Sign up </Typography>
+
 			<form onSubmit={ handleSubmit } className={ classes.container }>
         <TextField
           label="Username"
@@ -84,4 +98,4 @@ function SignUp() {
 	)
 }
 
-export default SignUp
+export default withFirebase(SignUp)
