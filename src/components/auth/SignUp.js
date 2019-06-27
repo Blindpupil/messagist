@@ -54,10 +54,11 @@ function SignUp(props) {
 
   const classes = useStyles()
 
+  // TODO: form validation
 	return (
 		<Paper className={ classes.root }>
       <Typography variant="h4"> Sign up </Typography>
-
+    
 			<form onSubmit={ handleSubmit } className={ classes.container }>
         <TextField
           label="Username"

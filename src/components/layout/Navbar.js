@@ -1,7 +1,11 @@
 import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
+import { 
+	firestoreConnect, 
+	isLoaded, 
+	isEmpty
+} from 'react-redux-firebase'
 import { Link } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -42,10 +46,9 @@ const useStyles = makeStyles(theme => ({
 
 function Navbar({ auth, messages }) {
 	const allLoaded = isLoaded(auth) && isLoaded(messages)
-	const authEmpty = isEmpty(auth)
 
 	const authLinks = () => {
-		return !authEmpty
+		return !isEmpty(auth)
 			? <SignedInLinks auth={ auth } messages={ messages } />
 			: <SignedOutLinks />
 	}
@@ -82,6 +85,6 @@ const mapStateToProps = (state) => ({
 })
 
 export default compose(
-	firebaseConnect(),
+	firestoreConnect([ 'messages', 'users' ]),
 	connect(mapStateToProps)
 )(Navbar)

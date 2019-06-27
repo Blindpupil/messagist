@@ -4,10 +4,9 @@ import PrivateMessage from './PrivateMessage'
 
 function MessageList(props) {
 	const { messages, auth } = props
-	const currentUser = auth.uid
 
 	const publicMessages = messages.filter(message => message.isPublic)
-	const privateMessages = messages.filter(message => message.recipient === currentUser)
+	const privateMessages = messages.filter(message => message.recipient === auth.uid)
 
 	const publicMessageList = publicMessages.map(publicMessage => 
 		publicMessage &&

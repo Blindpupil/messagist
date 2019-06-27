@@ -13,7 +13,7 @@ import SignIn from './components/auth/SignIn'
 import SignUp from './components/auth/SignUp'
 import Dashboard from './components/dashboard/Dashboard'
 import CreateMessage from './components/messages/CreateMessage'
-
+import Profile from './components/profile/Profile'
 
 function App() {
   return (
@@ -28,6 +28,7 @@ function App() {
               <Route path="/create" component={ CreateMessage } />
               <Route path="/login" component={ SignIn } />
               <Route path="/signup" component={ SignUp } />
+              <Route path="/profile" component={ Profile } />
             </Switch>
           </header>
         </div>
