@@ -96,7 +96,11 @@ function SignedInLinks(props) {
       open={ isMenuOpen }
       onClose={ handleMenuClose }
     >
-      <MenuItem onClick={ handleMenuClose }>Profile</MenuItem>
+      <MenuItem onClick={ handleMenuClose }>
+        <NavLink className={ classes.menuItemLink } to="/profile">
+          Profile
+        </NavLink>
+      </MenuItem>
 
       <MenuItem onClick={ handleLogout }>
 				<NavLink className={ classes.menuItemLink } to="/">
@@ -171,7 +175,7 @@ function SignedInLinks(props) {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p>Settings</p>
       </MenuItem>
     </Menu>
   )

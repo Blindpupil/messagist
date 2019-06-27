@@ -11,14 +11,15 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function PrivateMessage(props) {
+function PrivateMessage({ message, participants }) {
 	const classes = useStyles()
 
 	const {
 		author,
+		authorId,
 		content,
 		date
-	} = props.message
+	} = message
 
 	const dateOptions = { 
     weekday: 'long',
@@ -30,11 +31,17 @@ function PrivateMessage(props) {
 	}
 
 	const formattedDate = new Date(date.seconds*1000).toLocaleDateString("en-US", dateOptions)
+	
+	let title = `${ author } whispered to you:`
+
+	if (participants && (participants.currentUserId === authorId)) {
+		title = `You whispered to ${ participants.recepientUsername }`
+	}
 
 	return (
 		<Paper className={ classes.root }>
 			<Typography variant="h6">
-				{ author } whispered to you:
+				{ title }
 			</Typography>
 
 			<Typography variant="body1">
