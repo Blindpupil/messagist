@@ -1,4 +1,29 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Messagist
+
+Welcome to [messagist](https://kicklox-messagist.web.app/). A small app to test React/Redux front-end skills, with a bit of Firebase in the backend just to make it work.
+This small app lets you write public posts and private messages to users in the app.
+For the UI I leverage the power of material-ui.
+Use email and a password to signup and login. Afterwards you can post public messages or send private messages to other users.
+
+## Running it locally
+
+If you want to run this locally in your own firebase instance, simply 
+1. create a [firebase account](https://console.firebase.google.com)
+2. create a new project
+3. replace the local [config object in this project](src\firebase\config.js) to the object in the project you just created. Click on the "Web" configuration in your firebase project to see your config object. 
+
+## Important things that I usually do, but that are missing in this project
+1. [prop-types](https://www.npmjs.com/package/prop-types)
+2. error handling, fail cases, 404...
+3. blocked routes (if you go directly to /create when not logged in, you can still access the page). Usually with a "requestAuth" HOC
+4. dynamic routes to private messages (conversation style)
+5. HOC (higher order components) to pass all props down to children, instead of having each component accessing the store or firebase middleware
+6. atomization of smaller components, which became too big during development.
+7. a constants file to avoid using magic strings in action types
+8. tests
+9. form validation
+10. firestore rules are still in development mode
+11. probably many other things...
 
 ## Available Scripts
 
@@ -40,29 +65,3 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify

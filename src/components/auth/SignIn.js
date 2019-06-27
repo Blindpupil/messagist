@@ -34,6 +34,9 @@ function SignIn(props) {
     })
   }
 
+  /**
+   * TODO: error handling
+   */
   async function handleSubmit(event) {
     event.preventDefault()
     
@@ -44,6 +47,9 @@ function SignIn(props) {
 
   const classes = useStyles()
 
+  /**
+   * TODO: form validation
+   */
 	return (
 		<Paper className={ classes.root }>
       <Typography variant="h4"> Login </Typography>  

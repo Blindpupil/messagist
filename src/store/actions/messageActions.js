@@ -1,4 +1,12 @@
-export const createMessage = (message) => async (dispatch, getState, { getFirestore }) => {
+/**
+ * Receives a message from the component that called this action.
+ * Use getFirestore middleware to create a firestore db instance.
+ * Here firestore === db
+ * More https://firebase.google.com/docs/firestore/manage-data/add-data
+ * @param {*} message 
+ * @returns async Function that dispatches reducers 
+ */
+export const createMessage = (message = {}) => async (dispatch, getState, { getFirestore }) => {
   const firestore = getFirestore()
 
   try {
@@ -10,7 +18,7 @@ export const createMessage = (message) => async (dispatch, getState, { getFirest
     })
 
     dispatch({
-      type: 'CREATE_MESSAGE',
+      type: 'CREATE_MESSAGE', // I would normally user CONSTANTS for type names to avoid using magic strings.
       message
     })
   } catch (error) {
@@ -21,7 +29,13 @@ export const createMessage = (message) => async (dispatch, getState, { getFirest
   }
 }
 
-export const markPrivateMessagesAsRead = (privateMessages) => async (dispatch, getState, { getFirestore }) => {
+/**
+ * Receives a privateMessages array and makes sure that they are marked as read
+ * "isNew: false" in the Firestore db.
+ * @param {*} privateMessages 
+ * @returns async Function that dispatches reducers 
+ */
+export const markPrivateMessagesAsRead = (privateMessages = []) => async (dispatch, getState, { getFirestore }) => {
   const firestore = getFirestore()
 
   try {
@@ -33,6 +47,11 @@ export const markPrivateMessagesAsRead = (privateMessages) => async (dispatch, g
     })
 
     await batch.commit()
+
+    /**
+     * There's no need to dispatch the new state because Firestore connects
+     * with the app via web sockets and the middleware handles the rest
+     */
   } catch (error) {
     dispatch({
       type: 'EDIT_MESSAGES_ERROR',

@@ -1,7 +1,8 @@
 import { createMuiTheme } from '@material-ui/core/styles'
 
-/*
- * Expand or override the theme object here
+/**
+ * TODO:
+ * Keep your styles DRY by expanding or overriding the theme object here.
  */
 const customTheme = createMuiTheme({
 	palette: {

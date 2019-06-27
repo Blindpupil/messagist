@@ -84,6 +84,9 @@ const mapStateToProps = (state) => ({
 	users: state.firestore.ordered.users
 })
 
+/**
+ * Provide access to the 'messages' and 'user' collections in firestore 
+ */
 export default compose(
 	firestoreConnect([ 'messages', 'users' ]),
 	connect(mapStateToProps)

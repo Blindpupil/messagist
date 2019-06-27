@@ -39,6 +39,12 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
+/**
+ * Component that handles the UI buttons in NavBar during the logged-in state
+ * BIG TODO: this functional component got WAAAAY bigger than expected
+ * Extract smaller components and reduce the logic here.
+ * @param {*} props
+ */
 function SignedInLinks(props) {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)

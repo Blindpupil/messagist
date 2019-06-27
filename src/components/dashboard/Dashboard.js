@@ -65,6 +65,10 @@ function Dashboard(props) {
 			)
 	}
 
+	/**
+	 * TODO: atomize this as a Loader component and import it where needed,
+	 * and customize it via props
+	 */
 	const loader = () => (
 		<Grid className={ classes.loader } container direction="row" alignItems="center" justify="center">
 			<CircularProgress color="secondary" />
@@ -89,7 +93,7 @@ const mapStateToProps = (state) => ({
 })	
 
 /**
- * Sync the messages collection in firestore to the Dashboard component
+ * Syncs the messages collection in firestore to the Dashboard component
  */
 export default compose(
 	firestoreConnect([ 'messages', 'users' ]),
