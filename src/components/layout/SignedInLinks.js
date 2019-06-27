@@ -1,6 +1,8 @@
 import React from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { firebaseConnect } from 'react-redux-firebase'
 import { NavLink } from 'react-router-dom'
-import { withFirebase } from 'react-redux-firebase'
 
 import { makeStyles } from '@material-ui/core/styles'
 import {
@@ -15,6 +17,8 @@ import MailIcon from '@material-ui/icons/Mail'
 import MoreIcon from '@material-ui/icons/MoreVert'
 
 import MenuItemButton from './MenuItemButton'
+import { markPrivateMessagesAsRead } from '../../store/actions/messageActions'
+
 
 const useStyles = makeStyles(theme => ({
 	menuItemLink: {
@@ -45,6 +49,10 @@ function SignedInLinks(props) {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
   const isNotificationsMenuOpen = Boolean(notificationsAnchorEl)
 
+  const currentUser = props.auth.uid
+  const privateMessages = props.messages.filter(message => message.recipient === currentUser)
+  const newPrivateMessages = privateMessages.filter(privateMessage => privateMessage.isNew)
+
   function handleProfileMenuOpen(event) {
     setAnchorEl(event.currentTarget)
   }
@@ -55,6 +63,10 @@ function SignedInLinks(props) {
   
   function handleNotificationsMenuOpen(event) {
     setNotificationsAnchorEl(event.currentTarget)
+
+    if (Boolean(newPrivateMessagesAmount)) { // false for 0, true for any other number
+      props.markPrivateMessagesAsRead(newPrivateMessages)
+    }
   }
 
   function handleMenuClose() {
@@ -94,10 +106,6 @@ function SignedInLinks(props) {
     </Menu>
   )
 
-  const currentUser = props.auth.uid
-  const privateMessages = props.messages.filter(message => message.recipient === currentUser)
-  const privateMessageAmount = privateMessages.length
-
   const notificationsId = 'notifications-account-menu'
   const renderNotificationsMenu = (
     <Menu
@@ -121,16 +129,17 @@ function SignedInLinks(props) {
     </Menu>
   )
 
+  const newPrivateMessagesAmount = newPrivateMessages.length
   const renderNotifications = () => {
     return (
       <IconButton 
-        aria-label={ `Show ${ privateMessages } new mails` }
+        aria-label={ `Show ${ newPrivateMessagesAmount } new mails` }
         color="inherit"
         aria-controls={ menuId }
-        aria-haspopup={ Boolean(privateMessageAmount) } // false for 0, true for any other number
+        aria-haspopup={ Boolean(newPrivateMessagesAmount) } // false for 0, true for any other number
         onClick={ handleNotificationsMenuOpen }
       >
-        <Badge badgeContent={ privateMessageAmount } color="secondary">
+        <Badge badgeContent={ newPrivateMessagesAmount } color="secondary">
           <MailIcon />
         </Badge>
       </IconButton>
@@ -205,4 +214,11 @@ function SignedInLinks(props) {
   )
 }
 
-export default withFirebase(SignedInLinks)
+const mapDispatchToProps = (dispatch) => ({
+  markPrivateMessagesAsRead: (privateMessages) => dispatch(markPrivateMessagesAsRead(privateMessages))
+})
+
+export default compose(
+  firebaseConnect(),
+	connect(null, mapDispatchToProps)
+)(SignedInLinks)

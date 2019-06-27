@@ -44,7 +44,8 @@ function Dashboard(props) {
 	const classes = useStyles()
 	
 	const showMessages = () => {
-		const user = users && props.users.find(o => o.id === auth.uid)
+		const allLoaded = isLoaded(auth, users)
+		const user = allLoaded && props.users.find(user => user.id === auth.uid)
 		const username = user ? user.username : ''
 
 		return isEmpty(messages)
@@ -53,7 +54,7 @@ function Dashboard(props) {
 				<React.Fragment>
 					<Typography className={ classes.welcomeMessage } variant="body1"> 
 						{
-							!isEmpty(users)
+							isEmpty(username)
 							? 'Welcome! Login or Sign up to post messages!'
 							: `Welcome ${ username }, here are your messages:`
 						}

@@ -72,15 +72,14 @@ function CreateMessage(props) {
     setPublic(!isPublic)
   }
 
-  async function handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault()
 
     const { uid } = props.auth
     const { username } = props.users.find(o => o.id === uid)
     
-
     // TODO: error handling
-    await props.createMessage({
+    props.createMessage({
       author: username,
       authorId: uid,
       content,
