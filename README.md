@@ -10,7 +10,7 @@ Use email and a password to signup and login. Afterwards you can post public mes
 If you want to run this locally in your own firebase instance, simply 
 1. create a [firebase account](https://console.firebase.google.com)
 2. create a new project
-3. replace the local [config object in this project](src\firebase\config.js) to the object in the project you just created. Click on the "Web" configuration in your firebase project to see your config object. 
+3. replace the local [config object in this project](src/firebase/config.js) to the object in the project you just created. Click on the "Web" configuration in your firebase project to see your config object. 
 
 ## Important things that I usually do, but that are missing in this project
 1. [prop-types](https://www.npmjs.com/package/prop-types)
