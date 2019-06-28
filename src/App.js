@@ -29,7 +29,7 @@ function App() {
               <Route path="/create" component={ UserIsAuthenticated(CreateMessage) } />
               <Route path="/login" component={ SignIn } />
               <Route path="/signup" component={ SignUp } />
-              <Route path="/profile" component={ Profile } />
+              <Route path="/profile" component={ UserIsAuthenticated(Profile) } />
             </Switch>
           </header>
         </div>
