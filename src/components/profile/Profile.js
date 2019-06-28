@@ -135,6 +135,9 @@ const mapStateToProps = (state) => ({
 })	
 
 export default compose(
-	firestoreConnect([ 'messages', 'users' ]),
+	firestoreConnect([
+		{ collection: 'messages', orderBy: ['date', 'asc'] },
+		{ collection: 'users' }
+	]),
 	connect(mapStateToProps)
 )(Profile)

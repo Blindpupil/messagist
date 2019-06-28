@@ -96,6 +96,9 @@ const mapStateToProps = (state) => ({
  * Syncs the messages collection in firestore to the Dashboard component
  */
 export default compose(
-	firestoreConnect([ 'messages', 'users' ]),
+	firestoreConnect([
+		{ collection: 'messages', orderBy: ['date', 'desc'] },
+		{ collection: 'users' }
+	]),
 	connect(mapStateToProps)
 )(Dashboard)
