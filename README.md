@@ -15,15 +15,14 @@ If you want to run this locally in your own firebase instance, simply
 ## Important things that I usually do, but that are missing in this project
 1. [prop-types](https://www.npmjs.com/package/prop-types)
 2. error handling, fail cases, 404...
-3. blocked routes (if you go directly to /create when not logged in, you can still access the page). Usually fixed with a "requestAuth" HOC
-4. dynamic routes to private messages (conversation style)
-5. HOC (higher order components) to pass all props down to children, instead of having each component accessing the store or firebase middleware
-6. atomization of smaller components, which became too big during development.
-7. a constants file to avoid using magic strings in action types
-8. tests
-9. form validation
-10. firestore rules are still in development mode (I'll delete the project anyways)
-11. probably many other things...
+3. dynamic routes to private messages (conversation style)
+4. HOC (higher order components) to pass all props down to children, instead of having each component accessing the store or firebase middleware
+5. atomization of smaller components, which became too big during development.
+6. a constants file to avoid using magic strings in action types
+7. tests
+8. form validation
+9. firestore rules are still in development mode (I'll delete the project anyways)
+10. probably many other things...
 
 ## Available Scripts
 

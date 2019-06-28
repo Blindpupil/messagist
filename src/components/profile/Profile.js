@@ -6,6 +6,7 @@ import {
 	isLoaded,
 	isEmpty
 } from 'react-redux-firebase'
+import { Redirect } from 'react-router-dom'
 
 import {
 	CircularProgress,
@@ -48,6 +49,9 @@ function Profile(props) {
     users,
     messages 
   } = props
+
+  // Redirect to login if user is not authenticated
+  if (isEmpty(auth)) return <Redirect to="/login" />
 
   const allLoaded = isLoaded(auth) && isLoaded(users) && isLoaded(messages)
   const currentUser = allLoaded && users.find(user => user.id === auth.uid)

@@ -1,7 +1,12 @@
 import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
+import {
+  firestoreConnect,
+  isLoaded,
+  isEmpty
+} from 'react-redux-firebase'
+import { Redirect } from 'react-router-dom'
 import {
   Button,
   CircularProgress,
@@ -42,8 +47,10 @@ function CreateMessage(props) {
   const [recipient, setRecipient] = React.useState('')
   const [content, setContent] = React.useState('')
   const [isPublic, setPublic] = React.useState(true)
-
   const classes = useStyles()
+
+  // Redirect to login if user is not authenticated
+  if (isEmpty(props.auth)) return <Redirect to="/login" />
 
   const usersLoaded = isLoaded(props.users)
   const isOnlyUser = usersLoaded && props.users.length === 1
