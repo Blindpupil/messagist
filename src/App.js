@@ -5,9 +5,10 @@ import {
   Route
 } from 'react-router-dom'
 
-import { ThemeProvider } from '@material-ui/styles' 
-import customTheme from './theme'
+import { ThemeProvider } from '@material-ui/styles'
 
+import { UserIsAuthenticated } from './HOC/UserIsAuthenticated'
+import customTheme from './theme'
 import Navbar from './components/layout/Navbar'
 import SignIn from './components/auth/SignIn'
 import SignUp from './components/auth/SignUp'
@@ -25,7 +26,7 @@ function App() {
 
             <Switch>
               <Route path="/" exact component={ Dashboard } />
-              <Route path="/create" component={ CreateMessage } />
+              <Route path="/create" component={ UserIsAuthenticated(CreateMessage) } />
               <Route path="/login" component={ SignIn } />
               <Route path="/signup" component={ SignUp } />
               <Route path="/profile" component={ Profile } />
